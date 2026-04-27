@@ -1,5 +1,3 @@
-import { RouteRecordRaw } from 'vue-router'
-
 export interface MenuItem {
   path: string
   name: string
