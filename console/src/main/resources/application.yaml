@@ -1,0 +1,130 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: yunzhou-oa-console
+
+  # 数据源配置（阿里云 RDS PostgreSQL）
+  datasource:
+    url: jdbc:postgresql://pgm-bp13ydmhvh1a3bz78o.pg.rds.aliyuncs.com:5432/yunzhou_dev
+    username: Chenlz
+    password: Clz11053
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  # Jackson 配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+
+  # Redis 配置（本地开发可先不启动，注释掉 data.redis 即可）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+      timeout: 3000
+
+  # 虚拟线程配置
+  threads:
+    virtual:
+      enabled: true
+
+# Camunda 8 配置（本地开发可先不启动）
+# zeebe:
+#   client:
+#     broker:
+#       gatewayAddress: localhost:26500
+#     security:
+#       plaintext: true
+camunda:
+  sdk:
+    auth:
+      enabled: false
+    job:
+      worker:
+        enabled: false  # 本地开发暂时禁用
+
+# jOOQ 配置
+jooq:
+  sql:
+    dialect: POSTGRES
+
+# MinIO 配置
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket-name: yunzhou-oa
+
+# Meilisearch 配置
+meilisearch:
+  host: http://localhost:7700
+  api-key: masterKey
+
+# XXL-JOB 配置（本地开发可先不启动）
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8081/xxl-job-admin
+    accessToken: default_token
+    executor:
+      appname: yunzhou-oa-executor
+      address:
+      ip:
+      port: 9999
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+
+# JWT 配置
+jwt:
+  secret: yunzhou-oa-jwt-secret-key-for-authentication-2024
+  expiration: 86400000
+  header: Authorization
+  prefix: "Bearer "
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.yunzhou: DEBUG
+    org.jooq: INFO
+    org.camunda: WARN
+
+# SpringDoc 配置
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+
+# Actuator 配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# 自定义配置
+yunzhou:
+  oa:
+    upload:
+      max-file-size: 50MB
+      allowed-types: jpg,jpeg,png,gif,pdf,doc,docx,xls,xlsx
+    attendance:
+      work-start-time: "09:00"
+      work-end-time: "18:00"
+      location-radius: 500

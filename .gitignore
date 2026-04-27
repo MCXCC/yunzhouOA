@@ -1,0 +1,51 @@
+# Maven
+console/target/
+console/out/
+console/*.jar
+console/*.war
+console/*.log
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node
+web/node_modules/
+web/dist/
+web/.env.local
+web/.env.*.local
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+
+# Generated
+console/target/generated-sources/
+
+# Sensitive
+*.key
+*.pem
+application-local.yaml
+
+# Logs
+*.log
+logs/
+
+# MinIO data
+minio-data/
+
+# Camunda
+.zeebe/
+
+# XXL-JOB
+/data/

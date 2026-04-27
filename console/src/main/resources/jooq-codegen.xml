@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.19.0.xsd">
+
+    <jdbc>
+        <driver>org.postgresql.Driver</driver>
+        <url>jdbc:postgresql://pgm-bp13ydmhvh1a3bz78o.pg.rds.aliyuncs.com:5432/yunzhou_dev</url>
+        <user>Chenlz</user>
+        <password>Clz11053</password>
+    </jdbc>
+
+    <generator>
+        <name>org.jooq.codegen.JavaGenerator</name>
+
+        <database>
+            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+            <includes>.*</includes>
+            <excludes>ACT_.*|flyway.*|databasechangelog.*|pg_.*</excludes>
+            <inputSchema>public</inputSchema>
+        </database>
+
+        <generate>
+            <daos>true</daos>
+            <pojos>true</pojos>
+            <interfaces>true</interfaces>
+            <records>true</records>
+            <fluentSetters>true</fluentSetters>
+            <generatedAnnotation>true</generatedAnnotation>
+        </generate>
+
+        <target>
+            <packageName>com.yunzhou.console.codegen</packageName>
+            <directory>target/generated-sources/jooq</directory>
+        </target>
+    </generator>
+</configuration>
