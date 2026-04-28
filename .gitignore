@@ -49,3 +49,7 @@ minio-data/
 
 # XXL-JOB
 /data/
+
+# minio
+minio/data
+minio/*.exe
