@@ -4,6 +4,7 @@ import com.yunzhou.console.common.PageResult;
 import com.yunzhou.console.common.R;
 import com.yunzhou.console.config.JwtTokenProvider;
 import com.yunzhou.console.model.system.SysUser;
+import com.yunzhou.console.security.RequiresPermissions;
 import com.yunzhou.console.service.system.PostService;
 import com.yunzhou.console.service.system.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +31,7 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final DSLContext dsl;
 
+    @RequiresPermissions("system:user:list")
     @Operation(summary = "分页查询用户列表")
     @GetMapping("/list")
     public R<PageResult<SysUser>> list(
@@ -42,6 +44,7 @@ public class UserController {
         return R.ok(page);
     }
 
+    @RequiresPermissions("system:user:query")
     @Operation(summary = "获取用户详情")
     @GetMapping("/{id}")
     public R<SysUser> getById(@PathVariable Long id) {
@@ -49,6 +52,7 @@ public class UserController {
         return R.ok(user);
     }
 
+    @RequiresPermissions("system:user:add")
     @Operation(summary = "新增用户")
     @PostMapping
     public R<Void> create(@RequestBody SysUser user) {
@@ -56,6 +60,7 @@ public class UserController {
         return R.ok("新增成功");
     }
 
+    @RequiresPermissions("system:user:edit")
     @Operation(summary = "修改用户")
     @PutMapping
     public R<Void> update(@RequestBody SysUser user) {
@@ -63,6 +68,7 @@ public class UserController {
         return R.ok("修改成功");
     }
 
+    @RequiresPermissions("system:user:remove")
     @Operation(summary = "删除用户（支持批量）")
     @DeleteMapping("/{ids}")
     public R<Void> delete(@PathVariable List<Long> ids) {
@@ -72,6 +78,7 @@ public class UserController {
         return R.ok("删除成功");
     }
 
+    @RequiresPermissions("system:user:resetPwd")
     @Operation(summary = "重置密码")
     @PutMapping("/resetPwd")
     public R<Void> resetPassword(@RequestBody ResetPasswordRequest request) {

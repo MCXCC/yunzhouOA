@@ -58,20 +58,42 @@ const menuList = computed(() => {
   const userMenus = userStore.menus
   if (!userMenus || userMenus.length === 0) return []
   
-  return userMenus
-    .filter(item => item.menuType === 'M' && item.visible === '0')
-    .map(item => ({
-      path: '/' + item.path,
-      name: item.name,
-      icon: item.icon,
-      children: item.children
+  const result: any[] = []
+  
+  // 处理一级菜单（目录类型 M 和首页）
+  userMenus.forEach(item => {
+    // 首页单独处理
+    if (item.path === 'dashboard' && item.menuType === 'C') {
+      result.push({
+        path: '/dashboard',
+        name: item.name || '首页',
+        icon: item.icon || 'House',
+        children: []
+      })
+      return
+    }
+    
+    // 只处理目录类型且可见的菜单
+    if (item.menuType === 'M' && item.visible === '0') {
+      const children = item.children
         ?.filter(c => c.menuType === 'C' && c.visible === '0')
         .map(c => ({
           path: '/' + item.path + '/' + c.path,
           name: c.name,
         })) || []
-    }))
-    .filter(item => item.children.length > 0 || item.path === '/dashboard')
+      
+      if (children.length > 0) {
+        result.push({
+          path: '/' + item.path,
+          name: item.name,
+          icon: item.icon,
+          children
+        })
+      }
+    }
+  })
+  
+  return result
 })
 </script>
 
