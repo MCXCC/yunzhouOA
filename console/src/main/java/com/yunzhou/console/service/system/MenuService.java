@@ -139,7 +139,11 @@ public class MenuService {
                 .execute();
     }
 
-    public List<SysMenu> listMenusByRoleIds(Long[] roleIds) {
+    public List<SysMenu> listMenusByRoleIds(List<Long> roleIds) {
+        if (roleIds == null || roleIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
         List<Long> menuIds = dsl.selectDistinct(field("menu_id"))
                 .from(table(SYS_ROLE_MENU))
                 .where(field("role_id").in(roleIds))

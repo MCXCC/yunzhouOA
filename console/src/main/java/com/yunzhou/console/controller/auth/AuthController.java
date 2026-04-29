@@ -9,14 +9,12 @@ import com.yunzhou.console.service.system.PostService;
 import com.yunzhou.console.service.system.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -134,16 +132,5 @@ public class AuthController {
     @PostMapping("/logout")
     public R<Void> logout() {
         return R.ok();
-    }
-
-    @Data
-    public static class LoginRequest {
-        private String username;
-        private String password;
-    }
-
-    @Data
-    public static class LoginResponse {
-        private String token;
     }
 }
