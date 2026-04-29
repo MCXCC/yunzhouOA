@@ -150,10 +150,10 @@ const getList = async () => {
   try {
     const res = await messageApi.list(queryParams)
     if (activeTab.value === 'all') {
-      messageList.value = res.rows || []
+      messageList.value = res.records || []
       total.value = res.total || 0
     } else {
-      unreadList.value = (res.rows || []).filter((item: SysMessage) => item.readStatus === '0')
+      unreadList.value = (res.records || []).filter((item: SysMessage) => item.readStatus === '0')
       total.value = unreadList.value.length
     }
   } catch (error) {

@@ -226,7 +226,8 @@ const getList = async () => {
   loading.value = true
   try {
     const res = await userApi.list(queryParams)
-    tableData.value = res.rows || []
+    console.log('用户列表返回数据:', res)
+    tableData.value = res.records || []
     total.value = res.total || 0
   } catch (error) {
     console.error(error)

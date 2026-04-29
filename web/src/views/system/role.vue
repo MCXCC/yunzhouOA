@@ -199,7 +199,7 @@ const getList = async () => {
       endTime: dateRange.value?.[1] || undefined
     }
     const res = await roleApi.list(params)
-    tableData.value = res.rows || []
+    tableData.value = res.records || []
     total.value = res.total || 0
   } catch (error) {
     console.error(error)

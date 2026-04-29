@@ -80,9 +80,9 @@ public class AuthController {
         // 查询用户岗位
         List<String> posts = postService.getUserPostNames(user.getId());
         
-        // 查询用户菜单权限
+        // 查询用户菜单权限（已经是树形结构）
         List<SysMenu> menus = menuService.listMenusByRoleIds(roleIds);
-        List<Map<String, Object>> menuList = buildMenuTree(menus, 0L);
+        List<Map<String, Object>> menuList = convertMenus(menus);
         
         // 构建返回数据
         Map<String, Object> result = new HashMap<>();
@@ -100,32 +100,29 @@ public class AuthController {
         return R.ok(result);
     }
     
-    private List<Map<String, Object>> buildMenuTree(List<SysMenu> menus, Long parentId) {
-        List<Map<String, Object>> tree = new ArrayList<>();
+    private List<Map<String, Object>> convertMenus(List<SysMenu> menus) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        if (menus == null) return list;
         
         for (SysMenu menu : menus) {
-            if (menu.getParentId().equals(parentId)) {
-                Map<String, Object> node = new HashMap<>();
-                node.put("id", menu.getId());
-                node.put("name", menu.getMenuName());
-                node.put("path", menu.getPath());
-                node.put("component", menu.getComponent());
-                node.put("perms", menu.getPerms());
-                node.put("menuType", menu.getMenuType());
-                node.put("icon", menu.getIcon());
-                node.put("visible", menu.getVisible());
-                
-                // 递归构建子菜单
-                List<Map<String, Object>> children = buildMenuTree(menus, menu.getId());
-                if (!children.isEmpty()) {
-                    node.put("children", children);
-                }
-                
-                tree.add(node);
+            Map<String, Object> node = new HashMap<>();
+            node.put("id", menu.getId());
+            node.put("name", menu.getMenuName());
+            node.put("path", menu.getPath());
+            node.put("component", menu.getComponent());
+            node.put("perms", menu.getPerms());
+            node.put("menuType", menu.getMenuType());
+            node.put("icon", menu.getIcon());
+            node.put("visible", menu.getVisible());
+            
+            // 递归转换子菜单
+            if (menu.getChildren() != null && !menu.getChildren().isEmpty()) {
+                node.put("children", convertMenus(menu.getChildren()));
             }
+            
+            list.add(node);
         }
-        
-        return tree;
+        return list;
     }
 
     @Operation(summary = "用户登出")

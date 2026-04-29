@@ -35,12 +35,13 @@ public class UserController {
     @Operation(summary = "分页查询用户列表")
     @GetMapping("/list")
     public R<PageResult<SysUser>> list(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) Integer status,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) Long deptId,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageResult<SysUser> page = userService.listUsers(keyword, status, deptId, pageNum, pageSize);
+        PageResult<SysUser> page = userService.listUsers(username, phone, status, deptId, pageNum, pageSize);
         return R.ok(page);
     }
 

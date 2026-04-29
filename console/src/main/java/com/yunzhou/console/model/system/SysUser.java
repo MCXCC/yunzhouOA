@@ -16,6 +16,9 @@ public class SysUser implements Serializable {
     @Schema(description = "部门ID")
     private Long deptId;
 
+    @Schema(description = "部门名称")
+    private String deptName;
+
     @Schema(description = "用户账号")
     private String username;
 

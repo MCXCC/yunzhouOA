@@ -84,7 +84,7 @@ public class PermissionService {
      * 检查用户是否是超级管理员
      */
     public boolean isAdmin(Long userId) {
-        return hasRole(userId, "admin");
+        return getUserRoles(userId).contains("admin");
     }
 
     /**

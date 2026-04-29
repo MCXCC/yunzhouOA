@@ -38,37 +38,77 @@ public class UserService {
                 .fetchOneInto(SysUser.class);
     }
 
-    public PageResult<SysUser> listUsers(String keyword, Integer status, Long deptId, Integer pageNum, Integer pageSize) {
-        var condition = field("deleted").eq("0");
+    public PageResult<SysUser> listUsers(String username, String phone, String status, Long deptId, Integer pageNum, Integer pageSize) {
+        var condition = field("u.deleted").eq("0");
 
-        if (keyword != null && !keyword.isEmpty()) {
-            condition = condition.and(
-                    field("username").like("%" + keyword + "%")
-                            .or(field("nickname").like("%" + keyword + "%"))
-                            .or(field("email").like("%" + keyword + "%"))
-                            .or(field("phone").like("%" + keyword + "%"))
-            );
+        if (username != null && !username.isEmpty()) {
+            condition = condition.and(field("u.username").like("%" + username + "%"));
         }
-        if (status != null) {
-            condition = condition.and(field("status").eq(status.toString()));
+        if (phone != null && !phone.isEmpty()) {
+            condition = condition.and(field("u.phone").like("%" + phone + "%"));
+        }
+        if (status != null && !status.isEmpty()) {
+            condition = condition.and(field("u.status").eq(status));
         }
         if (deptId != null) {
-            condition = condition.and(field("dept_id").eq(deptId));
+            condition = condition.and(field("u.dept_id").eq(deptId));
         }
 
         Long total = dsl.selectCount()
-                .from(table(SYS_USER))
+                .from(table(SYS_USER).as("u"))
                 .where(condition)
                 .fetchOneInto(Long.class);
 
-        List<SysUser> records = dsl.selectFrom(table(SYS_USER))
+        var records = dsl.select(
+                        field("u.id").as("id"),
+                        field("u.dept_id").as("dept_id"),
+                        field("d.dept_name").as("dept_name"),
+                        field("u.username").as("username"),
+                        field("u.nickname").as("nickname"),
+                        field("u.email").as("email"),
+                        field("u.phone").as("phone"),
+                        field("u.gender").as("gender"),
+                        field("u.avatar").as("avatar"),
+                        field("u.password").as("password"),
+                        field("u.status").as("status"),
+                        field("u.login_ip").as("login_ip"),
+                        field("u.login_date").as("login_date"),
+                        field("u.create_time").as("create_time"),
+                        field("u.update_time").as("update_time"),
+                        field("u.deleted").as("deleted"),
+                        field("u.remark").as("remark")
+                )
+                .from(table(SYS_USER).as("u"))
+                .leftJoin(table("sys_dept").as("d")).on(field("u.dept_id").eq(field("d.id")))
                 .where(condition)
-                .orderBy(field("create_time").desc())
+                .orderBy(field("u.create_time").desc())
                 .limit(pageSize)
                 .offset((pageNum - 1) * pageSize)
-                .fetchInto(SysUser.class);
+                .fetch();
 
-        return PageResult.of(records, total, pageNum, pageSize);
+        List<SysUser> userList = records.map(r -> {
+            SysUser user = new SysUser();
+            user.setId(r.get(field("id", Long.class)));
+            user.setDeptId(r.get(field("dept_id", Long.class)));
+            user.setDeptName(r.get(field("dept_name", String.class)));
+            user.setUsername(r.get(field("username", String.class)));
+            user.setNickname(r.get(field("nickname", String.class)));
+            user.setEmail(r.get(field("email", String.class)));
+            user.setPhone(r.get(field("phone", String.class)));
+            user.setGender(r.get(field("gender", String.class)));
+            user.setAvatar(r.get(field("avatar", String.class)));
+            user.setPassword(r.get(field("password", String.class)));
+            user.setStatus(r.get(field("status", String.class)));
+            user.setLoginIp(r.get(field("login_ip", String.class)));
+            user.setLoginDate(r.get(field("login_date", java.sql.Timestamp.class)) != null ? r.get(field("login_date", java.sql.Timestamp.class)).toLocalDateTime() : null);
+            user.setCreateTime(r.get(field("create_time", java.sql.Timestamp.class)) != null ? r.get(field("create_time", java.sql.Timestamp.class)).toLocalDateTime() : null);
+            user.setUpdateTime(r.get(field("update_time", java.sql.Timestamp.class)) != null ? r.get(field("update_time", java.sql.Timestamp.class)).toLocalDateTime() : null);
+            user.setDeleted(r.get(field("deleted", String.class)));
+            user.setRemark(r.get(field("remark", String.class)));
+            return user;
+        });
+
+        return PageResult.of(userList, total, pageNum, pageSize);
     }
 
     @Transactional

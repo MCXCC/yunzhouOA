@@ -224,7 +224,7 @@ const getList = async () => {
       queryParams.endTime = ''
     }
     const res = await noticeApi.list(queryParams)
-    tableData.value = res.rows || []
+    tableData.value = res.records || []
     total.value = res.total || 0
   } catch (error) {
     console.error(error)
