@@ -13,8 +13,18 @@ public class R<T> implements Serializable {
 
     private R() {}
 
-    public static <T> R<T> ok() {
-        return ok(null);
+    public static R<Void> ok() {
+        R<Void> r = new R<>();
+        r.setCode(200);
+        r.setMessage("success");
+        return r;
+    }
+
+    public static R<Void> ok(String message) {
+        R<Void> r = new R<>();
+        r.setCode(200);
+        r.setMessage(message);
+        return r;
     }
 
     public static <T> R<T> ok(T data) {
@@ -33,10 +43,12 @@ public class R<T> implements Serializable {
         return r;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> R<T> fail() {
-        return fail("操作失败");
+        return (R<T>) fail("操作失败");
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> R<T> fail(String message) {
         R<T> r = new R<>();
         r.setCode(500);
@@ -44,6 +56,7 @@ public class R<T> implements Serializable {
         return r;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> R<T> fail(Integer code, String message) {
         R<T> r = new R<>();
         r.setCode(code);

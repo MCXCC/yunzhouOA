@@ -1,5 +1,7 @@
 package com.yunzhou.console;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +20,12 @@ public class DatabaseInitializer {
         System.out.println("========================================");
         System.out.println("  云州OA - 数据库初始化工具");
         System.out.println("========================================");
+        System.out.println();
+
+        // 生成BCrypt密码哈希
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedPassword = encoder.encode("123456");
+        System.out.println("生成的密码哈希 (123456): " + encodedPassword);
         System.out.println();
 
         Path sqlFile = Paths.get("src/main/resources/db/init.sql");
@@ -68,6 +76,13 @@ public class DatabaseInitializer {
                         }
                     }
                 }
+
+                // 更新管理员密码
+                System.out.println();
+                System.out.println("正在重置用户密码...");
+                String updateSql = "UPDATE sys_user SET password = '" + encodedPassword + "'";
+                stmt.execute(updateSql);
+                System.out.println("[OK] 密码已重置为: 123456");
 
                 System.out.println();
                 System.out.println("========================================");

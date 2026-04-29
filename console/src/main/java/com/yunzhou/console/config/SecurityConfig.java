@@ -33,8 +33,6 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**").permitAll()
                         // Swagger
                         .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                        // Camunda
-                        .requestMatchers("/camunda/**").permitAll()
                         // 其他接口需要认证
                         .anyRequest().authenticated()
                 )

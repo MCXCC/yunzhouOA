@@ -57,6 +57,11 @@ const handleLogin = async () => {
   try {
     const { token } = await authApi.login(loginForm)
     userStore.setToken(token)
+    
+    // 获取用户信息
+    const userInfo = await authApi.getUserInfo()
+    userStore.setUserInfo(userInfo)
+    
     router.push('/')
   } finally {
     loading.value = false

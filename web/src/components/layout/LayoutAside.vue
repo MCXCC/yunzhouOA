@@ -13,27 +13,27 @@
         text-color="#bfcbd9"
         active-text-color="#409eff"
       >
-        <template v-for="route in menuRoutes" :key="route.path">
-          <el-sub-menu v-if="route.children?.length" :index="route.path">
+        <template v-for="item in menuList" :key="item.path">
+          <el-sub-menu v-if="item.children?.length" :index="item.path">
             <template #title>
-              <el-icon v-if="route.meta?.icon">
-                <component :is="route.meta.icon" />
+              <el-icon v-if="item.icon">
+                <component :is="item.icon" />
               </el-icon>
-              <span>{{ route.meta?.title }}</span>
+              <span>{{ item.name }}</span>
             </template>
             <el-menu-item
-              v-for="child in route.children"
+              v-for="child in item.children"
               :key="child.path"
-              :index="route.path + '/' + child.path"
+              :index="child.path"
             >
-              {{ child.meta?.title }}
+              {{ child.name }}
             </el-menu-item>
           </el-sub-menu>
-          <el-menu-item v-else :index="route.path">
-            <el-icon v-if="route.meta?.icon">
-              <component :is="route.meta.icon" />
+          <el-menu-item v-else :index="item.path">
+            <el-icon v-if="item.icon">
+              <component :is="item.icon" />
             </el-icon>
-            <template #title>{{ route.meta?.title }}</template>
+            <template #title>{{ item.name }}</template>
           </el-menu-item>
         </template>
       </el-menu>
@@ -42,29 +42,36 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useUserStore } from '@/store/user'
 
 const route = useRoute()
-const router = useRouter()
+const userStore = useUserStore()
 
 const isCollapse = ref(false)
 
 const activeMenu = computed(() => route.path)
 
-const menuRoutes = computed(() => {
-  return router.getRoutes()
-    .filter(r => r.meta?.title && !r.meta?.hidden && r.path !== '/login')
-    .map(r => ({
-      path: r.path,
-      name: r.name as string,
-      meta: r.meta as any,
-      children: r.children?.filter(c => !c.meta?.hidden).map(c => ({
-        path: c.path,
-        name: c.name as string,
-        meta: c.meta as any,
-      })),
+// 根据用户权限动态生成菜单
+const menuList = computed(() => {
+  const userMenus = userStore.menus
+  if (!userMenus || userMenus.length === 0) return []
+  
+  return userMenus
+    .filter(item => item.menuType === 'M' && item.visible === '0')
+    .map(item => ({
+      path: '/' + item.path,
+      name: item.name,
+      icon: item.icon,
+      children: item.children
+        ?.filter(c => c.menuType === 'C' && c.visible === '0')
+        .map(c => ({
+          path: '/' + item.path + '/' + c.path,
+          name: c.name,
+        })) || []
     }))
+    .filter(item => item.children.length > 0 || item.path === '/dashboard')
 })
 </script>
 

@@ -13,6 +13,11 @@
       </el-breadcrumb>
     </div>
     <div class="header-right">
+      <el-badge :value="unreadCount" :hidden="!unreadCount" class="notification-badge">
+        <el-icon class="notification-icon" @click="handleNotification">
+          <Bell />
+        </el-icon>
+      </el-badge>
       <el-dropdown @command="handleCommand">
         <div class="user-info">
           <el-avatar :size="32" :src="userStore.avatar || defaultAvatar" />
@@ -30,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import { ElMessageBox } from 'element-plus'
@@ -39,6 +45,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const isCollapse = ref(false)
+const unreadCount = ref(3)
 const currentRoute = computed(() => route)
 
 const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
@@ -47,8 +54,14 @@ const toggleCollapse = () => {
   isCollapse.value = !isCollapse.value
 }
 
+const handleNotification = () => {
+  router.push('/notice/todo')
+}
+
 const handleCommand = async (command: string) => {
-  if (command === 'logout') {
+  if (command === 'profile') {
+    router.push('/profile')
+  } else if (command === 'logout') {
     await ElMessageBox.confirm('确定退出登录吗？', '提示', {
       type: 'warning',
     })
@@ -82,6 +95,20 @@ const handleCommand = async (command: string) => {
 .header-right {
   display: flex;
   align-items: center;
+  gap: 20px;
+}
+
+.notification-badge {
+  cursor: pointer;
+}
+
+.notification-icon {
+  font-size: 20px;
+  color: #606266;
+
+  &:hover {
+    color: #409eff;
+  }
 }
 
 .user-info {

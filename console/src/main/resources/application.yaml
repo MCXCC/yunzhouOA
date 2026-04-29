@@ -21,8 +21,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
-    serialization:
-      write-dates-as-timestamps: false
 
   # Redis 配置（本地开发可先不启动，注释掉 data.redis 即可）
   data:
@@ -37,21 +35,6 @@ spring:
   threads:
     virtual:
       enabled: true
-
-# Camunda 8 配置（本地开发可先不启动）
-# zeebe:
-#   client:
-#     broker:
-#       gatewayAddress: localhost:26500
-#     security:
-#       plaintext: true
-camunda:
-  sdk:
-    auth:
-      enabled: false
-    job:
-      worker:
-        enabled: false  # 本地开发暂时禁用
 
 # jOOQ 配置
 jooq:
@@ -70,19 +53,12 @@ meilisearch:
   host: http://localhost:7700
   api-key: masterKey
 
-# XXL-JOB 配置（本地开发可先不启动）
-xxl:
-  job:
-    admin:
-      addresses: http://localhost:8081/xxl-job-admin
-    accessToken: default_token
-    executor:
-      appname: yunzhou-oa-executor
-      address:
-      ip:
-      port: 9999
-      logpath: /data/applogs/xxl-job/jobhandler
-      logretentiondays: 30
+# Flowable 工作流配置
+flowable:
+  async-executor-activate: true
+  database-schema-update: true
+
+
 
 # JWT 配置
 jwt:
@@ -96,8 +72,9 @@ logging:
   level:
     root: INFO
     com.yunzhou: DEBUG
-    org.jooq: INFO
-    org.camunda: WARN
+    org.jooq: WARN
+    org.jooq.impl: WARN
+    org.flowable: INFO
 
 # SpringDoc 配置
 springdoc:
